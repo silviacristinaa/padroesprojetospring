@@ -27,7 +27,7 @@
 
 <h3>Tecnologias Utilizadas:</h3>
 
- - Java 11, Spring Boot, Maven, Lombok, Banco de Dados H2 e Spring Cloud OpenFeign
+ - Java 11, Spring Boot, Maven, Lombok, Banco de Dados H2, JUnit Test e Spring Cloud OpenFeign
 
 <h3>Autor:</h3>
 
