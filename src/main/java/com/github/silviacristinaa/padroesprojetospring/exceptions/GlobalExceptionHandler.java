@@ -18,6 +18,12 @@ public class GlobalExceptionHandler {
 	private static final String NOT_FOUND_MSG = "Not found";
 	
 	private static final String EXCEPTION_LOG_MSG = "e=%s,m=%s";
+	
+	@ExceptionHandler(InternalServerErrorException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	protected ResponseEntity<ErrorMessage> processInternalServerErrorException(final InternalServerErrorException ex) {
+		return processException(ex);
+	}
 
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)

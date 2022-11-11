@@ -26,6 +26,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.github.silviacristinaa.padroesprojetospring.dtos.requests.ClienteRequisicaoDto;
 import com.github.silviacristinaa.padroesprojetospring.dtos.responses.ClienteRespostaDto;
 import com.github.silviacristinaa.padroesprojetospring.dtos.responses.EnderecoRespostaDto;
+import com.github.silviacristinaa.padroesprojetospring.exceptions.InternalServerErrorException;
 import com.github.silviacristinaa.padroesprojetospring.exceptions.NotFoundException;
 import com.github.silviacristinaa.padroesprojetospring.models.Cliente;
 import com.github.silviacristinaa.padroesprojetospring.services.ClienteService;
@@ -59,7 +60,6 @@ public class ClienteResourceTest {
 		clienteRespostaDto = new ClienteRespostaDto(ID, NOME, enderecoRespostaDto);
 		
 		cliente = new Cliente(); 
-		cliente.setId(ID);
 	}
 	
 	@Test
@@ -97,7 +97,7 @@ public class ClienteResourceTest {
 	}
 
 	@Test
-	void quandoInserirRetornarCreated() {
+	void quandoInserirRetornarCreated() throws InternalServerErrorException {
 		when(clienteService.inserir(Mockito.any())).thenReturn(cliente);
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -111,7 +111,7 @@ public class ClienteResourceTest {
 	}
 
 	@Test
-	void quandoAtualizarRetornarNoContent() throws NotFoundException {
+	void quandoAtualizarRetornarNoContent() throws NotFoundException, InternalServerErrorException {
 		ResponseEntity<Void> response = clienteResource.atualizar(ID, clienteRequisicaoDto);
 		
 		assertNotNull(response);

@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.github.silviacristinaa.padroesprojetospring.dtos.requests.ClienteRequisicaoDto;
 import com.github.silviacristinaa.padroesprojetospring.dtos.responses.ClienteRespostaDto;
+import com.github.silviacristinaa.padroesprojetospring.exceptions.InternalServerErrorException;
 import com.github.silviacristinaa.padroesprojetospring.exceptions.NotFoundException;
 import com.github.silviacristinaa.padroesprojetospring.services.ClienteService;
 
@@ -49,7 +50,7 @@ public class ClienteResource {
 
 	@PostMapping
 	@ApiOperation(value="Cria um cliente")
-	public ResponseEntity<Void> inserir(@RequestBody @Valid ClienteRequisicaoDto clienteRequisicao) {
+	public ResponseEntity<Void> inserir(@RequestBody @Valid ClienteRequisicaoDto clienteRequisicao) throws InternalServerErrorException {
 		URI uri = ServletUriComponentsBuilder
 				.fromCurrentRequest().path(ID).buildAndExpand(clienteService.inserir(clienteRequisicao).getId()).toUri();
 		return ResponseEntity.created(uri).build();
@@ -57,7 +58,7 @@ public class ClienteResource {
 
 	@PutMapping(value = ID)
 	@ApiOperation(value="Atualiza um cliente")
-	public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteRequisicaoDto clienteRequisicao) throws NotFoundException {
+	public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid ClienteRequisicaoDto clienteRequisicao) throws NotFoundException, InternalServerErrorException {
 		clienteService.atualizar(id, clienteRequisicao);
 		return ResponseEntity.noContent().build();
 	}

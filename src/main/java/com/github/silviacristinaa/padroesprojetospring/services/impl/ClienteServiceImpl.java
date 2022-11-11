@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.silviacristinaa.padroesprojetospring.dtos.requests.ClienteRequisicaoDto;
 import com.github.silviacristinaa.padroesprojetospring.dtos.responses.ClienteRespostaDto;
+import com.github.silviacristinaa.padroesprojetospring.exceptions.InternalServerErrorException;
 import com.github.silviacristinaa.padroesprojetospring.exceptions.NotFoundException;
 import com.github.silviacristinaa.padroesprojetospring.models.Cliente;
 import com.github.silviacristinaa.padroesprojetospring.models.Endereco;
@@ -42,12 +43,12 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
-	public Cliente inserir(ClienteRequisicaoDto clienteRequisicao) {
+	public Cliente inserir(ClienteRequisicaoDto clienteRequisicao) throws InternalServerErrorException {
 		Cliente cliente = getClienteComCep(clienteRequisicao);
 		return clienteRepository.save(cliente);
 	}
 
-	private Cliente getClienteComCep(ClienteRequisicaoDto clienteRequisicao) {
+	private Cliente getClienteComCep(ClienteRequisicaoDto clienteRequisicao) throws InternalServerErrorException {
 		Endereco endereco = salvarEndereco(clienteRequisicao);
 		Cliente cliente = modelMapper.map(clienteRequisicao, Cliente.class);
 		cliente.setEndereco(endereco);
@@ -55,21 +56,25 @@ public class ClienteServiceImpl implements ClienteService {
 		return cliente;
 	}
 
-	private Endereco salvarEndereco(ClienteRequisicaoDto clienteRequisicao) {
-		String cep = clienteRequisicao.getCep();
-		return enderecoRepository.findById(cep).orElseGet(() -> {
+	private Endereco salvarEndereco(ClienteRequisicaoDto clienteRequisicao) throws InternalServerErrorException {
+		try {
+			String cep = clienteRequisicao.getCep();
+			return enderecoRepository.findById(cep).orElseGet(() -> {
 				Endereco novoEndereco = viaCepService.consultarCep(cep);
 				enderecoRepository.save(novoEndereco);
 				return novoEndereco;
-		});
+			});
+		} catch (Exception e) {
+			throw new InternalServerErrorException("Falha ao salvar endereço");
+		}
 	}
 
 	@Override
-	public void atualizar(Long id, ClienteRequisicaoDto clienteRequisicao) throws NotFoundException {
+	public void atualizar(Long id, ClienteRequisicaoDto clienteRequisicao) throws NotFoundException, InternalServerErrorException {
 		findById(id);
 		Cliente cliente = getClienteComCep(clienteRequisicao);
 		cliente.setId(id);
-		
+
 		clienteRepository.save(cliente);
 	}
 
