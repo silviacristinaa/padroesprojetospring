@@ -1,13 +1,14 @@
 package com.github.silviacristinaa.padroesprojetospring;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
 class PadroesprojetospringApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		PadroesprojetospringApplication.main(new String[] {});
 	}
-
 }
