@@ -71,10 +71,10 @@ public class ClienteServiceImplTest {
 
 		clienteRespostaDto = new ClienteRespostaDto(1l, NOME, enderecoRespostaDto);
 
-		cliente = new Cliente(1l, NOME, endereco);
-
 		endereco = new Endereco();
 		endereco.setCep(CEP);
+		
+		cliente = new Cliente(1l, NOME, CEP, endereco);
 	}
 
 	@Test

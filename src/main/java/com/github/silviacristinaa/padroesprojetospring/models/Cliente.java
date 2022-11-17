@@ -2,9 +2,11 @@ package com.github.silviacristinaa.padroesprojetospring.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +25,8 @@ public class Cliente {
 	private Long id; 
 	@Column(nullable = false)
 	private String nome; 
-	@ManyToOne
+	private String cep;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cep", referencedColumnName = "cep", insertable = false, updatable = false)
 	private Endereco endereco; 
 }

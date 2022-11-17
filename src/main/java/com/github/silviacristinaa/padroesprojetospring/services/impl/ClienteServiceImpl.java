@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.silviacristinaa.padroesprojetospring.dtos.requests.ClienteRequisicaoDto;
 import com.github.silviacristinaa.padroesprojetospring.dtos.responses.ClienteRespostaDto;
@@ -43,6 +44,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
+	@Transactional
 	public Cliente inserir(ClienteRequisicaoDto clienteRequisicao) throws InternalServerErrorException {
 		Cliente cliente = getClienteComCep(clienteRequisicao);
 		return clienteRepository.save(cliente);
@@ -51,7 +53,7 @@ public class ClienteServiceImpl implements ClienteService {
 	private Cliente getClienteComCep(ClienteRequisicaoDto clienteRequisicao) throws InternalServerErrorException {
 		Endereco endereco = salvarEndereco(clienteRequisicao);
 		Cliente cliente = modelMapper.map(clienteRequisicao, Cliente.class);
-		cliente.setEndereco(endereco);
+		cliente.setCep(endereco.getCep());
 
 		return cliente;
 	}
@@ -70,6 +72,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
+	@Transactional
 	public void atualizar(Long id, ClienteRequisicaoDto clienteRequisicao) throws NotFoundException, InternalServerErrorException {
 		findById(id);
 		Cliente cliente = getClienteComCep(clienteRequisicao);
@@ -84,6 +87,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	@Override
+	@Transactional
 	public void deletar(Long id) throws NotFoundException {
 		findById(id);
 		clienteRepository.deleteById(id);
