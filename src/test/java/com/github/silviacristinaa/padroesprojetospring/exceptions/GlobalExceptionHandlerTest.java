@@ -13,35 +13,38 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 public class GlobalExceptionHandlerTest {
 
+	private static final String EXCEPTION_MSG_UNEXPECTED_ERROR = "Unexpected error";
+	private static final String NOT_FOUND_MSG = "Not found";
+	
 	@InjectMocks
 	private GlobalExceptionHandler globalExceptionHandler;
 
 	@Test
-	void quandoExceptionRetornarResponseEntity() {
+	void whenExceptionReturnResponseEntity() {
 		ResponseEntity<ErrorMessage> response = globalExceptionHandler
-				.processException(new Exception("Falha ao salvar endereço"));
+				.processException(new Exception("Failed to save address"));
 		
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 		assertEquals(ResponseEntity.class, response.getClass());
 		assertEquals(ErrorMessage.class, response.getBody().getClass());
-		assertEquals("Unexpected error", response.getBody().getMessage());
-		assertEquals("Falha ao salvar endereço", response.getBody().getErrors().get(0));
+		assertEquals(EXCEPTION_MSG_UNEXPECTED_ERROR, response.getBody().getMessage());
+		assertEquals("Failed to save address", response.getBody().getErrors().get(0));
 	}
 	
 	@Test
-	void quandoNotFoundExceptionRetornarResponseEntity() {
+	void whenNotFoundExceptionReturnResponseEntity() {
 		ResponseEntity<ErrorMessage> response = globalExceptionHandler
 				.handleMethodArgumentNotFoundException(
-						new NotFoundException(String.format("Cliente %s não encontrado", 1l)));
+						new NotFoundException(String.format("Customer %s not found", 1l)));
 		
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 		assertEquals(ResponseEntity.class, response.getClass());
 		assertEquals(ErrorMessage.class, response.getBody().getClass());
-		assertEquals("Not found", response.getBody().getMessage());
-		assertEquals("Cliente 1 não encontrado", response.getBody().getErrors().get(0));
+		assertEquals(NOT_FOUND_MSG, response.getBody().getMessage());
+		assertEquals("Customer 1 not found", response.getBody().getErrors().get(0));
 	}
 }

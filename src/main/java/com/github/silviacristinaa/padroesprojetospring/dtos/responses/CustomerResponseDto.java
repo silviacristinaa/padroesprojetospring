@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteRespostaDto {
+public class CustomerResponseDto {
 	
 	private Long id; 
-	private String nome; 
-	private EnderecoRespostaDto endereco; 
+	private String name; 
+	private AddressResponseDto address; 
 }

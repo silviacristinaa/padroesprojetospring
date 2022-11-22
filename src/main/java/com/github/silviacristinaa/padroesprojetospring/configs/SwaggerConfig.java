@@ -16,7 +16,7 @@ public class SwaggerConfig {
 	@Bean
 	public Docket getBean() { 
 		return new Docket(DocumentationType.SWAGGER_2).select()
-			.paths(PathSelectors.regex("/api/clientes.*"))
+			.paths(PathSelectors.regex("/api/customers.*"))
 			.build()
 			.apiInfo(getInfo());
 	}

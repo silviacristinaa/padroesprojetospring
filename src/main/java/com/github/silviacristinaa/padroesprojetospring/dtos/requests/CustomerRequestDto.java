@@ -8,10 +8,10 @@ import lombok.Setter;
 
 @Getter @Setter
 @AllArgsConstructor
-public class ClienteRequisicaoDto {
+public class CustomerRequestDto {
 	
 	@NotBlank
-	private String nome; 
+	private String name; 
 	@NotBlank
-	private String cep; 
+	private String zipCode; 
 }

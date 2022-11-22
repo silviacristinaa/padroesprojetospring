@@ -18,15 +18,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Cliente {
+public class Customer {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id; 
 	@Column(nullable = false)
-	private String nome; 
-	private String cep;
+	private String name; 
+	private String zipCode;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cep", referencedColumnName = "cep", insertable = false, updatable = false)
-	private Endereco endereco; 
+	@JoinColumn(name = "zipCode", referencedColumnName = "zipCode", insertable = false, updatable = false)
+	private Address address; 
 }

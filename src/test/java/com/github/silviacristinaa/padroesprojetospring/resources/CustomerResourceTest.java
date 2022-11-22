@@ -23,87 +23,87 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.github.silviacristinaa.padroesprojetospring.dtos.requests.ClienteRequisicaoDto;
-import com.github.silviacristinaa.padroesprojetospring.dtos.responses.ClienteRespostaDto;
-import com.github.silviacristinaa.padroesprojetospring.dtos.responses.EnderecoRespostaDto;
+import com.github.silviacristinaa.padroesprojetospring.dtos.requests.CustomerRequestDto;
+import com.github.silviacristinaa.padroesprojetospring.dtos.responses.CustomerResponseDto;
+import com.github.silviacristinaa.padroesprojetospring.dtos.responses.AddressResponseDto;
 import com.github.silviacristinaa.padroesprojetospring.exceptions.InternalServerErrorException;
 import com.github.silviacristinaa.padroesprojetospring.exceptions.NotFoundException;
-import com.github.silviacristinaa.padroesprojetospring.models.Cliente;
-import com.github.silviacristinaa.padroesprojetospring.services.ClienteService;
+import com.github.silviacristinaa.padroesprojetospring.models.Customer;
+import com.github.silviacristinaa.padroesprojetospring.services.CustomerService;
 
 @ExtendWith(SpringExtension.class)
-public class ClienteResourceTest {
+public class CustomerResourceTest {
 
 	private static final long ID = 1l;
-	private static final String NOME = "nome";
-	private static final String CEP = "cep";
+	private static final String NAME = "name";
+	private static final String ZIP_CODE = "zipCode";
 	private static final int INDEX = 0;
 	
-	private ClienteRequisicaoDto clienteRequisicaoDto;
-	private EnderecoRespostaDto enderecoRespostaDto;
-	private ClienteRespostaDto clienteRespostaDto;
-	private Cliente cliente;
+	private CustomerRequestDto customerRequestDto;
+	private AddressResponseDto addressResponseDto;
+	private CustomerResponseDto customerResponseDto;
+	private Customer customer;
 
 	@InjectMocks
-	private ClienteResource clienteResource;
+	private CustomerResource customerResource;
 
 	@Mock
-	private ClienteService clienteService;
+	private CustomerService customerService;
 	
 	@BeforeEach
 	void setUp() {
-		clienteRequisicaoDto = new ClienteRequisicaoDto(NOME, CEP);
+		customerRequestDto = new CustomerRequestDto(NAME, ZIP_CODE);
 		
-		enderecoRespostaDto = new EnderecoRespostaDto();
-		enderecoRespostaDto.setCep(CEP);
+		addressResponseDto = new AddressResponseDto();
+		addressResponseDto.setZipCode(ZIP_CODE);
 		
-		clienteRespostaDto = new ClienteRespostaDto(ID, NOME, enderecoRespostaDto);
+		customerResponseDto = new CustomerResponseDto(ID, NAME, addressResponseDto);
 		
-		cliente = new Cliente(); 
+		customer = new Customer(); 
 	}
 	
 	@Test
-	void quandoBuscarTodosRetornarListaDeClientes() {
-		when(clienteService.buscarTodos()).thenReturn(Arrays.asList(clienteRespostaDto));
+	void whenFindAllReturnCustomerList() {
+		when(customerService.findAll()).thenReturn(Arrays.asList(customerResponseDto));
 
-		ResponseEntity<List<ClienteRespostaDto>> response = clienteResource.buscarTodos();
+		ResponseEntity<List<CustomerResponseDto>> response = customerResource.findAll();
 
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(ResponseEntity.class, response.getClass());
-		assertEquals(ClienteRespostaDto.class, response.getBody().get(INDEX).getClass());
+		assertEquals(CustomerResponseDto.class, response.getBody().get(INDEX).getClass());
 
 		assertEquals(ID, response.getBody().get(INDEX).getId());
-		assertEquals(NOME, response.getBody().get(INDEX).getNome());
-		assertEquals(CEP, response.getBody().get(INDEX).getEndereco().getCep());
+		assertEquals(NAME, response.getBody().get(INDEX).getName());
+		assertEquals(ZIP_CODE, response.getBody().get(INDEX).getAddress().getZipCode());
 	}
 	
 	@Test
-	void quandoBuscarPorIdRetornarClienteUnico() throws NotFoundException {
-		when(clienteService.burcarPorId(anyLong())).thenReturn(clienteRespostaDto);
+	void whenFindByIdReturnOneCustomer() throws NotFoundException {
+		when(customerService.findOneCustomerById(anyLong())).thenReturn(customerResponseDto);
 		
-		ResponseEntity<ClienteRespostaDto> response = clienteResource.buscarPorId(ID);
+		ResponseEntity<CustomerResponseDto> response = customerResource.findById(ID);
 		
 		assertNotNull(response);
 		assertNotNull(response.getBody());
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(ResponseEntity.class, response.getClass());
-		assertEquals(ClienteRespostaDto.class, response.getBody().getClass());
+		assertEquals(CustomerResponseDto.class, response.getBody().getClass());
 		
 		assertEquals(ID, response.getBody().getId());
-		assertEquals(NOME, response.getBody().getNome());
-		assertEquals(CEP, response.getBody().getEndereco().getCep());
+		assertEquals(NAME, response.getBody().getName());
+		assertEquals(ZIP_CODE, response.getBody().getAddress().getZipCode());
 	}
 
 	@Test
-	void quandoInserirRetornarCreated() throws InternalServerErrorException {
-		when(clienteService.inserir(Mockito.any())).thenReturn(cliente);
+	void whenCreateCustomerReturnCreated() throws InternalServerErrorException {
+		when(customerService.create(Mockito.any())).thenReturn(customer);
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-		ResponseEntity<Void> response = clienteResource.inserir(clienteRequisicaoDto);
+		ResponseEntity<Void> response = customerResource.create(customerRequestDto);
 
 		assertEquals(ResponseEntity.class, response.getClass());
 		assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -111,8 +111,8 @@ public class ClienteResourceTest {
 	}
 
 	@Test
-	void quandoAtualizarRetornarNoContent() throws NotFoundException, InternalServerErrorException {
-		ResponseEntity<Void> response = clienteResource.atualizar(ID, clienteRequisicaoDto);
+	void whenUpdateReturnNoContent() throws NotFoundException, InternalServerErrorException {
+		ResponseEntity<Void> response = customerResource.update(ID, customerRequestDto);
 		
 		assertNotNull(response);
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode()); 
@@ -120,12 +120,12 @@ public class ClienteResourceTest {
 	}
 	
 	@Test
-	void quandoDeletarRetornarNoContent() throws NotFoundException {
-		ResponseEntity<Void> response = clienteResource.deletar(ID);
+	void whenDeleteReturnNoContent() throws NotFoundException {
+		ResponseEntity<Void> response = customerResource.delete(ID);
 		
 		assertNotNull(response);
 		assertEquals(ResponseEntity.class, response.getClass());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-		verify(clienteService, times(1)).deletar(anyLong());
+		verify(customerService, times(1)).delete(anyLong());
 	}
 }

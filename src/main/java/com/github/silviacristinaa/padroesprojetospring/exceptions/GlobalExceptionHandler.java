@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	protected ResponseEntity<ErrorMessage> processException(final Exception ex) {
+	public ResponseEntity<ErrorMessage> processException(final Exception ex) {
 		logE(ex);
 		
 		return new ResponseEntity<>(ErrorMessage.builder().message(EXCEPTION_MSG_UNEXPECTED_ERROR)
