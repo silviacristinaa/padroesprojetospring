@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
 	private static final String EXCEPTION_MSG_UNEXPECTED_ERROR = "Unexpected error";
+	private static final String EXCEPTION_MSG_ARGUMENTS_NOT_VALID = "Arguments not valid";
 	private static final String NOT_FOUND_MSG = "Not found";
 	
 	private static final String EXCEPTION_LOG_MSG = "e=%s,m=%s";
@@ -26,6 +28,15 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<>(ErrorMessage.builder().message(EXCEPTION_MSG_UNEXPECTED_ERROR)
 				.errors(Arrays.asList(ex.getMessage())).build(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorMessage> handleMethodArgumentBadRequestException(final MethodArgumentNotValidException ex) {
+		logE(ex);
+		
+		return new ResponseEntity<>(ErrorMessage.builder().message(EXCEPTION_MSG_ARGUMENTS_NOT_VALID)
+				.errors(Arrays.asList(ex.getMessage())).build(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(NotFoundException.class)
