@@ -1,6 +1,5 @@
 package com.github.silviacristinaa.padroesprojetospring.resources.customerIntegration;
 
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,7 +32,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(1)
 	public void whenTryCreateCustomerWithEmptyFieldsReturnBadRequest() throws Exception {
-		mvc.perform(post("/api/customers").headers(mockHttpHeaders())
+		mvc.perform(post("/customers").headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerCreateBadRequest()))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("message").value("Arguments not valid"))
@@ -43,7 +42,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(2)
 	public void whenTryCreateCustomerWithIncorrectZipCodeReturnInternalServerError() throws Exception {
-		mvc.perform(post("/api/customers").headers(mockHttpHeaders())
+		mvc.perform(post("/customers").headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerIncorrectZipCode()))
 			.andExpect(status().isInternalServerError())
 			.andExpect(jsonPath("message").value("Unexpected error"))
@@ -54,7 +53,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(3)
 	public void whenCreateCustomerReturnCreated() throws Exception {
-		mvc.perform(post("/api/customers").headers(mockHttpHeaders())
+		mvc.perform(post("/customers").headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerCreateSuccess()))
 			.andExpect(status().isCreated())
 			.andDo(i -> {
@@ -66,9 +65,9 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(4)
 	public void whenFindAllReturnOneValueSuccess() throws Exception {
-		mvc.perform(get("/api/customers").headers(mockHttpHeaders()))
+		mvc.perform(get("/customers").headers(mockHttpHeaders()))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("[0].name", is("teste")))
+			.andExpect(jsonPath("[0].name", is("test")))
 			.andExpect(jsonPath("[0].address.zipCode", is("01001-000")))
 			.andDo(print());
 	}
@@ -76,7 +75,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(5)
 	public void whenTryFindByIdWithIncorrectIdReturnNotFound() throws Exception {
-		mvc.perform(get("/api/customers/{id}", 999).headers(mockHttpHeaders()))
+		mvc.perform(get("/customers/{id}", 999).headers(mockHttpHeaders()))
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("message", is("Not found")))
 			.andExpect(jsonPath("errors.[0]", is("Customer 999 not found")))
@@ -86,9 +85,9 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(6)
 	public void whenFindByIdWithCorrectIdReturnSuccess() throws Exception {
-		mvc.perform(get("/api/customers/{id}", customerId).headers(mockHttpHeaders()))
+		mvc.perform(get("/customers/{id}", customerId).headers(mockHttpHeaders()))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("name", is("teste")))
+			.andExpect(jsonPath("name", is("test")))
 			.andExpect(jsonPath("address.zipCode", is("01001-000")))
 			.andDo(print());
 	}
@@ -96,7 +95,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(7)
 	public void whenTryUpdateCustomerWithEmptyFieldsReturnBadRequest() throws Exception {
-		mvc.perform(put("/api/customers/{id}", customerId).headers(mockHttpHeaders())
+		mvc.perform(put("/customers/{id}", customerId).headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerCreateBadRequest()))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("message").value("Arguments not valid"))
@@ -106,7 +105,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(8)
 	public void whenTryUpdateWithIncorrectIdReturnNotFound() throws Exception {
-		mvc.perform(put("/api/customers/{id}", 999).headers(mockHttpHeaders())
+		mvc.perform(put("/customers/{id}", 999).headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerUpdateSuccess()))
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("message", is("Not found")))
@@ -117,7 +116,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(9)
 	public void whenTryUpdateCustomerWithIncorrectZipCodeReturnInternalServerError() throws Exception {
-		mvc.perform(put("/api/customers/{id}", customerId).headers(mockHttpHeaders())
+		mvc.perform(put("/customers/{id}", customerId).headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerIncorrectZipCode()))
 			.andExpect(status().isInternalServerError())
 			.andExpect(jsonPath("message").value("Unexpected error"))
@@ -128,21 +127,21 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(10)
 	public void whenUpdateWithValueExistsReturnNoContent() throws Exception {
-		mvc.perform(put("/api/customers/{id}", customerId).headers(mockHttpHeaders())
+		mvc.perform(put("/customers/{id}", customerId).headers(mockHttpHeaders())
 				.content(CustomerResourceIntegrationBody.customerUpdateSuccess()))
 			.andExpect(status().isNoContent())
 			.andDo(print());
 		
 		Optional<Customer> customer = customerRepository.findById(Long.valueOf(customerId));
 		assertTrue(customer.isPresent());
-		assertEquals(customer.get().getName(), "teste1");
+		assertEquals(customer.get().getName(), "test1");
 		assertEquals(customer.get().getAddress().getZipCode(), "01001-000");
 	}
 	
 	@Test
 	@Order(11)
 	public void whenTryDeleteCustomerWithIncorrectIdReturnNotFound() throws Exception {
-		mvc.perform(delete("/api/customers/{id}", 999).headers(mockHttpHeaders()))
+		mvc.perform(delete("/customers/{id}", 999).headers(mockHttpHeaders()))
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("message", is("Not found")))
 			.andExpect(jsonPath("errors.[0]", is("Customer 999 not found")))
@@ -152,7 +151,7 @@ public class CustomerResourceIntegrationTest extends IntegrationTests {
 	@Test
 	@Order(12)
 	public void whenDeleteCustomerWithCorrectIdReturnNoContent() throws Exception {
-		mvc.perform(delete("/api/customers/{id}", customerId).headers(mockHttpHeaders()))
+		mvc.perform(delete("/customers/{id}", customerId).headers(mockHttpHeaders()))
 			.andExpect(status().isNoContent())
 			.andDo(print());
 		

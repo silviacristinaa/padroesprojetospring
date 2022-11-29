@@ -11,21 +11,21 @@ public class CustomerResourceIntegrationBody {
 	
 	static String customerCreateSuccess() {
 		return "{\r\n" + 
-				"    \"name\": \"teste\",\r\n" + 
+				"    \"name\": \"test\",\r\n" + 
 				"    \"zipCode\": \"01001000\"\r\n" + 
 				"}";
 	}
 	
 	static String customerIncorrectZipCode() {
 		return "{\r\n" + 
-				"    \"name\": \"teste\",\r\n" + 
+				"    \"name\": \"test\",\r\n" + 
 				"    \"zipCode\": \"0\"\r\n" + 
 				"}";
 	}
 	
 	static String customerUpdateSuccess() {
 		return "{\r\n" + 
-				"    \"name\": \"teste1\",\r\n" + 
+				"    \"name\": \"test1\",\r\n" + 
 				"    \"zipCode\": \"01001000\"\r\n" + 
 				"}";
 	}
