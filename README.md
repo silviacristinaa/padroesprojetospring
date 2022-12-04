@@ -10,7 +10,18 @@
 
 <b>Facade:</b> a camada Resource representa este Padrão de Projeto, pois abstrai toda a complexidade de integrações com o Banco de Dados H2 e com a API do ViaCep em uma interface simples e coesa.</b></p>
 
-<h3>Pré-requisitos:</h3>
+Além disso, o projeto oferece como serviço o controle de clientes, onde é possível: criar, ler, atualizar e excluir clientes do Banco de Dados. Para salvar ou atualizar informamos apenas o nome do cliente e o cep, assim o sistema consome a API externa do ViaCep para completar o restante das informações do endereço.
+
+<h3>Pré-requisitos com Docker:</h3>
+
+- Docker instalado
+
+<h3>Como executar:</h3>
+
+- execute o comando:
+docker run -p 8080:8080 --name padroesprojetospring -it silviacristinaa/padroesprojetospring:latest
+
+<h3>Pré-requisitos sem Docker:</h3>
 
 - Java 11
 
@@ -27,7 +38,7 @@
 
 <h3>Tecnologias Utilizadas:</h3>
 
- - Java 11, Spring Boot, Maven, Lombok, Banco de Dados H2, Spring Cloud OpenFeign, Testes Unitários e de Integração
+ - Java 11, Spring Boot, Maven, Lombok, Banco de Dados H2, Spring Cloud OpenFeign, Docker, Testes Unitários e de Integração
 
 <h3>Autor:</h3>
 
